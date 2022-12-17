@@ -1,5 +1,5 @@
 from torch.utils.data import Dataset
-import cv2
+from PIL import Image
 import numpy as np
 
 
@@ -16,8 +16,6 @@ class ListDataset(Dataset):
         self.label_paths = [info[1] for info in infos]
 
     def preprocess(self, img, label):
-        # cv: h, w, c, tensor: c, h, w
-        img = img.transpose((2, 0, 1)).astype(np.float32)
         # you can add other process method or augment here
         return img, label
 
@@ -25,7 +23,7 @@ class ListDataset(Dataset):
         return len(self.img_paths)
 
     def __getitem__(self, idx):
-        img = cv2.imread(self.img_paths[idx])
-        label = cv2.imread(self.label_paths[idx])
+        img = Image.open(self.img_paths[idx])
+        label = Image.open(self.label_paths[idx])
         img, label = self.preprocess(img, label)
         return img, label
